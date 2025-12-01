@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cálculo Costos Primarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='resultados.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Cálculo de Costos Primarios</h1>
+        
+        <form id="costos-form">
+            <div class="form-group">
+                <label for="materia_prima">Materia Prima ($):</label>
+                <input type="number" id="materia_prima" name="materia_prima" step="0.01" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="mano_obra">Mano de Obra ($):</label>
+                <input type="number" id="mano_obra" name="mano_obra" step="0.01" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="costos_indirectos">Costos Indirectos ($):</label>
+                <input type="number" id="costos_indirectos" name="costos_indirectos" step="0.01" min="0" required>
+            </div>
+            
+            <button type="submit">Calcular</button>
+        </form>
+        
+        <div id="resultados" class="resultados hidden">
+            <h2>Resultados</h2>
+            <div class="resultado-item">
+                <span class="label">Materia Prima:</span>
+                <span id="res-materia-prima" class="valor">$0.00</span>
+            </div>
+            <div class="resultado-item">
+                <span class="label">Mano de Obra:</span>
+                <span id="res-mano-obra" class="valor">$0.00</span>
+            </div>
+            <div class="resultado-item">
+                <span class="label">Costos Indirectos:</span>
+                <span id="res-costos-indirectos" class="valor">$0.00</span>
+            </div>
+            <div class="resultado-item total">
+                <span class="label">Costo Total:</span>
+                <span id="res-costo-total" class="valor">$0.00</span>
+            </div>
+        </div>
+        
+        <div id="error-message" class="error hidden"></div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    <script src="{{ url_for('static', filename='resultados.js') }}"></script>
+</body>
+</html>
