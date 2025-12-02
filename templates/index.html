@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>asiap — Tabla dinámica (demo)</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="app-header">
+    <h1>asiap — (as simple as possible)</h1>
+  </header>
+
+  <!-- PANTALLA INICIAL (SETUP) -->
+  <section id="setup-screen" class="setup-screen">
+    <div class="setup-card">
+      <h2>Configuración rápida</h2>
+      <p>Dos opciones para comenzar: carga un ejemplo o genera una tabla vacía y edítala directamente.</p>
+      <div class="setup-actions">
+        <button id="load-example-btn" class="primary">Cargar ejemplo</button>
+        <button id="generate-table-btn" class="secondary">Generar tabla vacía</button>
+      </div>
+      <p class="small-note">No se guarda información en el navegador. Todo el estado vive en memoria y se pierde al recargar (comportamiento final previsto).</p>
+    </div>
+  </section>
+
+  <!-- PANTALLA TABLA -->
+  <main id="table-screen" class="hidden">
+    <header class="controls">
+      <div>
+        <button id="add-col-a">Agregar columna A</button>
+        <button id="add-col-b">Agregar columna B</button>
+        <button id="add-row">Agregar fila</button>
+        <button id="reconfigure-btn" class="danger">Reconfigurar</button>
+        <span class="note">Dobleclic en cabeceras o celdas para editar. Límites recomendados: 25 columnas, 60 filas.</span>
+      </div>
+      <!-- Área para mostrar mensajes de validación (aria-live) -->
+      <div id="msg-area" role="status" aria-live="polite" class="msg-area"></div>
+    </header>
+
+    <div class="table-wrapper" id="table-wrapper">
+      <table id="dynamic-table" class="dynamic-table" aria-label="Tabla dinámica de ejemplo">
+        <!-- El contenido del table (colgroup, thead, tbody) lo genera app.js -->
+      </table>
+    </div>
+  </main>
+
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

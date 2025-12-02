@@ -1,0 +1,345 @@
+:root{
+  /* Anchos fijos definidos según tu indicación */
+  --col1-width: 210px; /* Columna 1 */
+  --col2-width: 110px; /* Columna 2 */
+  --col3-width: 120px; /* Columna 3 */
+  --col-a-width: 110px; /* Columnas A */
+  --col-b-width: 110px; /* Columnas B */
+
+  --header-height: 40px;
+  --cell-padding: 4px 8px; /* reducido para filas compactas */
+  --row-height: 30px; /* altura objetivo de fila (aprox) */
+  --header-row-height: calc(var(--row-height) * 2); /* doble altura para encabezado */
+  --max-table-height: 70vh;
+  --col-a-bg: #cfe8ff; /* azul A (más intenso) */
+  --col-b-bg: #e6f6ff; /* azul B (más suave) */
+  --fixed-col-bg: #fafafa; /* fondo de fijas/header por defecto */
+
+  --msg-error-bg: #ffecec;
+  --msg-error-color: #a33;
+}
+
+/* Global baseline */
+* { box-sizing: border-box; }
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  margin: 16px;
+  background: #f7f7f8;
+  color: #111;
+}
+
+/* App header */
+.app-header {
+  margin-bottom: 12px;
+}
+.app-header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+/* SETUP SCREEN (si la usas) */
+.setup-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+}
+.setup-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e2e2e2;
+  width: 420px;
+  text-align: center;
+}
+.setup-card h2 { margin-top: 0; }
+
+/* Controles */
+.hidden { display: none; }
+.controls {
+  margin-bottom: 8px;
+  display:flex;
+  flex-direction: column;
+  gap:8px;
+}
+.controls > div:first-child { display:flex; align-items:center; gap:8px; }
+
+/* Mensajes de validación */
+.msg-area {
+  min-height: 20px;
+  font-size: 0.95rem;
+}
+.msg-area .error {
+  background: var(--msg-error-bg);
+  color: var(--msg-error-color);
+  border: 1px solid rgba(163,51,51,0.12);
+  padding: 6px 8px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+/* Botones y notas */
+.controls button {
+  margin-right: 8px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+  cursor: pointer;
+}
+.controls .danger {
+  background: #fff6f6;
+  border-color: #f1b0b0;
+  color: #a33232;
+}
+.controls .note {
+  margin-left: 12px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Contenedor con scroll si es necesario (ID y clase) */
+.table-wrapper,
+#table-wrapper {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px;
+  max-width: 100%;
+  max-height: var(--max-table-height);
+  overflow: auto;
+  position: relative;
+  scrollbar-gutter: stable both-edges;
+}
+
+/* Tabla con layout fijo y cabecera sticky
+   Aplicar a #dynamic-table (ID usado por JS) y a .dynamic-table (por compatibilidad) */
+#dynamic-table,
+.dynamic-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+  background: white;
+  font-size: 13px;
+}
+
+/* GRID LINES: líneas entre todas las celdas (mejora legibilidad) */
+#dynamic-table th,
+#dynamic-table td,
+.dynamic-table th,
+.dynamic-table td {
+  border: 1px solid #e6e9ec; /* línea clara */
+  padding: var(--cell-padding);
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* Por defecto, celdas compactas (no-wrap) */
+#dynamic-table td,
+.dynamic-table td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: var(--row-height);
+  line-height: 1.1;
+  vertical-align: middle;
+}
+
+/* Header: doble altura y permite wrap en hasta dos líneas */
+#dynamic-table thead th,
+.dynamic-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--fixed-col-bg);
+  z-index: 5;
+  border-bottom: 2px solid #cfd8df;
+  text-align: center;
+  cursor: text;
+  /* Allow wrapping in header */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding: 6px 8px;
+  height: var(--header-row-height);
+  line-height: 1.15;
+  vertical-align: middle;
+}
+
+/* Estilos de columnas fijas (las 3 primeras) */
+.fixed-col {
+  position: sticky;
+  background: linear-gradient(#fff,#fff);
+  z-index: 6;
+  box-shadow: 1px 0 0 rgba(0,0,0,0.02);
+  /* left se calcula inline desde JS, position: sticky permite mantener la columna fija */
+}
+#dynamic-table thead .fixed-col,
+.dynamic-table thead .fixed-col { z-index: 8; }
+
+/* Encabezados tipo A y B: colores diferentes */
+#dynamic-table thead .col-type-A,
+.dynamic-table thead .col-type-A {
+  background: var(--col-a-bg);
+  color: #073b6a; /* texto un poco más oscuro para contraste */
+}
+#dynamic-table thead .col-type-B,
+.dynamic-table thead .col-type-B {
+  background: var(--col-b-bg);
+  color: #064063;
+}
+
+/* Clase visual cuando validación falla (se aplica brevemente) */
+.th-error {
+  outline: 2px solid rgba(163,51,51,0.9);
+  box-shadow: 0 0 0 3px rgba(163,51,51,0.08);
+}
+
+/* Indicador visual de elemento editable */
+#dynamic-table th[contenteditable="true"],
+#dynamic-table td[contenteditable="true"],
+.dynamic-table th[contenteditable="true"],
+.dynamic-table td[contenteditable="true"]{
+  outline: 2px dashed rgba(0,120,220,0.12);
+}
+
+/* Estilo específico para filas de subtítulo */
+.subtitle-row td {
+  background: #f3f7fb;
+  font-weight: 700;
+  color: #073b6a;
+  padding: 6px 8px;
+}
+/* primera columna del subtítulo centrada */
+.subtitle-row td:first-child {
+  text-align: center;
+}
+
+/* Botón pequeño "+" junto al subtítulo */
+.subtitle-add-btn {
+  border: 1px solid #cbd7e8;
+  background: white;
+  color: #073b6a;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+.subtitle-add-btn:hover { background: #f3f9ff; }
+
+/* Alternado de fondo para filas (zebra) */
+#dynamic-table tbody tr:nth-child(odd) td,
+.dynamic-table tbody tr:nth-child(odd) td { background: #ffffff; }
+#dynamic-table tbody tr:nth-child(even) td,
+.dynamic-table tbody tr:nth-child(even) td { background: #fcfcfd; }
+
+/* Hover ligero en filas de datos para mejor lectura */
+#dynamic-table tbody tr:not(.subtitle-row):hover td,
+.dynamic-table tbody tr:not(.subtitle-row):hover td {
+  background: #fbfdff;
+}
+
+/* Modal (overlay) para inserción múltiple */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.modal {
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  width: 1000px;
+  max-width: calc(100% - 32px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+.modal h3 { margin: 0 0 8px 0; font-size: 1.05rem; }
+.modal-hint { font-size: 0.85rem; color: #666; margin-bottom: 8px; }
+.modal .note { font-size:12px; color:#555; margin:6px 0 8px 0; }
+
+.modal-input {
+  width: 100%;
+  min-height: 140px;
+  resize: vertical;
+  padding: 8px;
+  border: 1px solid #d6dfe9;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+.modal .error-box { font-size: 13px; color: #b00020; margin: 6px 0 10px 0; display: none; }
+
+.modal-btns { display:flex; gap:8px; justify-content:flex-end; }
+.modal-save, .modal-cancel {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #c7d6e8;
+  background: white;
+  cursor: pointer;
+}
+.modal-save { background: #0b69ff; color: white; border-color: #0b69ff; }
+.modal-save[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* Botón visual que usamos para "agregar columna" - el icono + dentro */
+.btn-add-col .icon-plus,
+.add-col-icon {
+  display:inline-block;
+  width:20px;
+  height:20px;
+  border:1px solid #cfd8df;
+  border-radius:4px;
+  text-align:center;
+  line-height:18px;
+  margin-right:8px;
+  font-weight:600;
+}
+
+/* Clase visual cuando un th está en modo error temporal */
+.th-error { transition: box-shadow 0.2s ease, outline 0.2s ease; }
+
+/* Ajustes para la tabla dentro del wrapper scrollable */
+#table-wrapper { background: #fff; }
+
+/* Visual: botón oculto (ya usas .hidden en JS) */
+.hidden { display:none !important; }
+
+/* Responsividad */
+@media (max-width: 980px){
+  :root {
+    --col1-width: 180px;
+    --col2-width: 100px;
+    --col3-width: 100px;
+    --col-a-width: 100px;
+    --col-b-width: 100px;
+    --row-height: 28px;
+    --header-row-height: calc(var(--row-height) * 2);
+  }
+  .modal { width: calc(100% - 24px); }
+  .modal-input { min-height: 120px; }
+}
+
+/* --- Añadido: centrar celdas desde fila 2 y columna 2 en adelante --- */
+.centered-cell {
+  text-align: center;
+  vertical-align: middle;
+  /* Mantener truncado/ellipsis si el texto es largo */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Si las celdas contienen inputs/textarea, centrar el texto dentro */
+.centered-cell input,
+.centered-cell textarea {
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+}
