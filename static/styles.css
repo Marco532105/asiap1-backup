@@ -53,6 +53,12 @@ body {
   text-align: center;
 }
 .setup-card h2 { margin-top: 0; }
+.setup-card .greeting {
+  color: #2563eb;
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
 
 /* Controles */
 .hidden { display: none; }
